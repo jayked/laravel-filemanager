@@ -58,7 +58,9 @@
             <li><a href="javascript:rename('{{ $file_name }}')"><i class="fa fa-edit fa-fw"></i> {{ Lang::get('laravel-filemanager::lfm.menu-rename') }}</a></li>
             @endif
             <li><a href="javascript:fileView('{{ $file_name }}')"><i class="fa fa-image fa-fw"></i> {{ Lang::get('laravel-filemanager::lfm.menu-view') }}</a></li>
+            @if($options['download'])
             <li><a href="javascript:download('{{ $file_name }}')"><i class="fa fa-download fa-fw"></i> {{ Lang::get('laravel-filemanager::lfm.menu-download') }}</a></li>
+            @endif
             @if($options['resize'] || $options['crop'])
               <li class="divider"></li>
               {{--<li><a href="javascript:notImp()">Rotate</a></li>--}}

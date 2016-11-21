@@ -50,11 +50,13 @@
                             <i class="fa fa-plus"></i> {{ Lang::get('laravel-filemanager::lfm.nav-new') }}
                           </a>
                         </li>
+                        @if($options['upload'])
                         <li>
                           <a href="#" id="upload" data-toggle="modal" data-target="#uploadModal">
                             <i class="fa fa-upload"></i> {{ Lang::get('laravel-filemanager::lfm.nav-upload') }}
                           </a>
                         </li>
+                        @endif
 
                         @if($file_type === 'Images')
                         <li class="hidden-xs"><a style='cursor:default;'>|</a></li>
@@ -100,6 +102,7 @@
     </div>
   </div>
 
+  @if($options['upload'])
   <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -134,6 +137,7 @@
       </div>
     </div>
   </div>
+  @endif
 
   <div class="modal fade" id="fileViewModal" tabindex="-1" role="dialog" aria-labelledby="fileLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">

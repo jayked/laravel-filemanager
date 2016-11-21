@@ -62,7 +62,9 @@
         </td>
         <td>
           <a href="javascript:fileView('{{ $file_name }}')" title="{{ Lang::get('laravel-filemanager::lfm.menu-view') }}"><i class="fa fa-image fa-fw"></i></a>
+          @if($options['download'])
           <a href="javascript:download('{{ $file_name }}')" title="{{ Lang::get('laravel-filemanager::lfm.menu-download') }}"><i class="fa fa-download fa-fw"></i></a>
+          @endif
           @if($options['remove'])
             <a href="javascript:trash('{{ $file_name }}')" title="{{ Lang::get('laravel-filemanager::lfm.menu-delete') }}">
             <i class="fa fa-trash fa-fw"></i>

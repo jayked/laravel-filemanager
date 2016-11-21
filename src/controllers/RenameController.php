@@ -12,6 +12,7 @@ use Lang;
  * @package Jayked\Laravelfilemanager\controllers
  */
 class RenameController extends LfmController {
+	public $option = 'rename';
 
     /**
      * @return string

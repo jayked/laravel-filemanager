@@ -4,6 +4,7 @@ use Jayked\Laravelfilemanager\controllers\Controller;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
+use Jayked\Laravelfilemanager\Exceptions\NotAllowedException;
 
 /**
  * Class LfmController
@@ -19,6 +20,7 @@ class LfmController extends Controller
 	public $file_location = null;
 	public $dir_location = null;
 	public $file_type = null;
+	public $option = null;
 
 
 	/**
@@ -45,6 +47,12 @@ class LfmController extends Controller
 
 		$this->checkDefaultFolderExists( 'user' );
 		$this->checkDefaultFolderExists( 'share' );
+
+		// Check for the option if it is not null
+		if( !is_null( $this->option ) )
+		{
+			$this->checkOption( $this->option );
+		}
 	}
 
 
@@ -63,12 +71,14 @@ class LfmController extends Controller
 		{
 			$show_list = 0;
 		}
+		$options = Config::get('lfm.options');
 
 		return view( 'laravel-filemanager::index' )
 			->with( 'working_dir', $working_dir )
 			->with( 'show_list', $show_list )
 			->with( 'file_type', $this->file_type )
-			->with( 'working_tree', $working_tree );
+			->with( 'working_tree', $working_tree )
+			->with( 'options', $options );
 	}
 
 
@@ -205,5 +215,13 @@ class LfmController extends Controller
 	public function getTruePath( $file )
 	{
 		return str_replace( config( 'lfm.images_url' ), config( 'lfm.images_dir' ), $file );
+	}
+
+	public function checkOption( $option )
+	{
+		if( !Config::get( 'lfm.options.' . $option ) )
+		{
+			throw new NotAllowedException( 'You are not allowed to use the [' . $option . '] option' );
+		}
 	}
 }

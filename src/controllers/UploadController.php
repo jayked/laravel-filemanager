@@ -19,6 +19,7 @@ class UploadController extends LfmController
 
 	private $default_file_types = [ 'application/pdf' ];
 	private $default_image_types = [ 'image/jpeg', 'image/png', 'image/gif' ];
+	public $option = 'upload';
 
 	/**
 	 * Upload an image/file and (for images) create thumbnail

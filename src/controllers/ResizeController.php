@@ -11,6 +11,7 @@ use Intervention\Image\Facades\Image;
  * @package Jayked\Laravelfilemanager\controllers
  */
 class ResizeController extends LfmController {
+	public $option = 'resize';
 
     /**
      * Dipsplay image for resizing

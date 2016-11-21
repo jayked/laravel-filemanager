@@ -13,6 +13,7 @@ use Intervention\Image\Facades\Image;
  */
 class CropController extends LfmController
 {
+	public $option = 'crop';
 
 	/**
 	 * Show crop page

@@ -13,6 +13,7 @@ use Jayked\Laravelfilemanager\Events\ImageWasDeleted;
  * @package Jayked\Laravelfilemanager\controllers
  */
 class DeleteController extends LfmController {
+	public $option = 'remove';
 
     /**
      * Delete image and associated thumbnail
