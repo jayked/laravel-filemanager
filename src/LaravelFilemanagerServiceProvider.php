@@ -28,6 +28,10 @@ class LaravelFilemanagerServiceProvider extends ServiceProvider {
             __DIR__ . '/config/lfm.php' => base_path('config/lfm.php'),
         ], 'lfm_config');
 
+		$this->mergeConfigFrom(
+			__DIR__.'/config/lfm.php' , base_path('u-cms-content')
+		);
+
         $this->publishes([      
             __DIR__.'/../public' => public_path('vendor/laravel-filemanager'),     
         ], 'lfm_public');
