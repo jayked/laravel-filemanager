@@ -66,8 +66,6 @@
 		'file_type_array'       => [
 			'pdf'  => 'Adobe Acrobat',
 			'docx' => 'Microsoft Word',
-			'docx' => 'Microsoft Word',
-			'xls'  => 'Microsoft Excel',
 			'xls'  => 'Microsoft Excel',
 			'zip'  => 'Archive',
 			'gif'  => 'GIF Image',
@@ -82,8 +80,6 @@
 		'file_icon_array'       => [
 			'pdf'  => 'fa-file-pdf-o',
 			'docx' => 'fa-file-word-o',
-			'docx' => 'fa-file-word-o',
-			'xls'  => 'fa-file-excel-o',
 			'xls'  => 'fa-file-excel-o',
 			'zip'  => 'fa-file-archive-o',
 			'gif'  => 'fa-file-image-o',
