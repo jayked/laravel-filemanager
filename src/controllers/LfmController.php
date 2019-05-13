@@ -203,7 +203,7 @@ class LfmController extends Controller
 		$working_dir_start = $lfm_dir_start + strlen( $this->file_location );
 		$lfm_file_path     = substr( $file, $working_dir_start );
 
-		$arr_dir               = explode( '/', $lfm_file_path );
+		$arr_dir               = explode( $this->getPathSeperator(), $lfm_file_path );
 		$arr_filename['short'] = end( $arr_dir );
 		$arr_filename['long']  = '/' . $lfm_file_path;
 		$arr_filename['base']  = basename( $lfm_file_path );
@@ -215,6 +215,11 @@ class LfmController extends Controller
 	public function getTruePath( $file )
 	{
 		return str_replace( config( 'lfm.images_url' ), config( 'lfm.images_dir' ), $file );
+	}
+
+	private function getPathSeperator()
+	{
+		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? '\\' : '/';
 	}
 
 	public function checkOption( $option )
