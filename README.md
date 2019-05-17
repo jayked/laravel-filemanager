@@ -44,6 +44,11 @@ The `jayked/laravel-filemanager` is compatible with the following versions of La
   - 5.1 (Not tested, code should be compatible)
   - 5.2 (Tested)
   - 5.3 (Tested)
+  - 5.4 (Tested)
+  - 5.5 (Tested)
+  - 5.6 (Not tested, code should be compatible)
+  - 5.7 (Not tested, code should be compatible)
+  - 5.8 (Tested)
 
 ## Upgrade guide
   * `composer update jayked/laravel-filemanager`
