@@ -19,7 +19,7 @@ class DownloadController extends LfmController {
      */
     public function getDownload()
     {
-        return Response::download(parent::getPath('directory') . Input::get('file'));
+        return Response::download($this->getPath('directory') . Input::get('file'));
     }
 
 }

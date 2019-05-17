@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
 use Jayked\Laravelfilemanager\Exceptions\NotAllowedException;
+use Jayked\Laravelfilemanager\Exceptions\ForbiddenDirectoryException;
 
 /**
  * Class LfmController
@@ -122,7 +123,6 @@ class LfmController extends Controller
 			$working_dir = substr( $working_dir, 1 );
 		}
 
-
 		$location .= $working_dir;
 
 		if( $type === 'directory' || $type === 'thumb' )
@@ -139,7 +139,7 @@ class LfmController extends Controller
 			$location .= Config::get( 'lfm.thumb_folder_name' ) . '/';
 		}
 
-		return $location;
+        return $location;
 	}
 
 
@@ -159,6 +159,15 @@ class LfmController extends Controller
 		$path = base_path() . '/' . $this->file_location;
 
 		$path = $this->formatLocation( $path, $type );
+
+        // Validate access when approach is direct
+        if(is_file($path) || is_dir($path)) {
+
+            // Throw a 403 exception when directory is not in the public directory
+            if(strpos(realpath($path), realpath(base_path($this->file_location))) !== 0) {
+                throw new ForbiddenDirectoryException('You are not allowed to use the provided directory');
+            }
+        }
 
 		return $path;
 	}
