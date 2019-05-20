@@ -24,6 +24,7 @@ class ResizeController extends LfmController {
         $image = Input::get('img');
 
         $path_to_image   = parent::getPath('directory') . $image;
+        $this->validateLocation($path_to_image);
         $original_width  = Image::make($path_to_image)->width();
         $original_height = Image::make($path_to_image)->height();
 
