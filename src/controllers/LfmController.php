@@ -217,7 +217,9 @@ class LfmController extends Controller
 	
 	public function getTruePath( $file )
 	{
-		return str_replace( config( 'lfm.images_url' ), config( 'lfm.images_dir' ), $file );
+        $path = str_replace( config( 'lfm.images_url' ), config( 'lfm.images_dir' ), $file );
+        $this->validateLocation($path);
+        return $path;
 	}
 
 	private function getPathSeperator()
