@@ -68,6 +68,7 @@ class UploadController extends LfmController
 			return Lang::get( 'laravel-filemanager::lfm.error-file-exist' );
 		}
 
+        $this->validateLocation($dest_path . $new_filename);
 		$file->move( $dest_path, $new_filename );
 
 		if( 'Images' === $this->file_type )
