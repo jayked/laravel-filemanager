@@ -161,13 +161,7 @@ class LfmController extends Controller
 		$path = $this->formatLocation( $path, $type );
 
         // Validate access when approach is direct
-        if(is_file($path) || is_dir($path)) {
-
-            // Throw a 403 exception when directory is not in the public directory
-            if(strpos(realpath($path), realpath(base_path($this->file_location))) !== 0) {
-                throw new ForbiddenDirectoryException('You are not allowed to use the provided directory');
-            }
-        }
+        $this->validateLocation($path);
 
 		return $path;
 	}
@@ -238,4 +232,45 @@ class LfmController extends Controller
 			throw new NotAllowedException( 'You are not allowed to use the [' . $option . '] option' );
 		}
 	}
+
+    /**
+     * Validate whether the location should be accessible or not
+     *
+     * @param  string  $location
+     *
+     * @return bool
+     */
+    protected function validateLocation($location)
+    {
+        if(is_string($location)) {
+
+            // Throw a 403 exception when directory is not in the public directory
+            if(strpos($this->realPathWithNonExistingFiles($location), realpath(base_path($this->file_location))) !== 0) {
+                throw new ForbiddenDirectoryException('You are not allowed to use the provided directory');
+            }
+        }
+
+        return true;
+    }
+
+    private function realPathWithNonExistingFiles($location)
+    {
+        $replacePaths = ['\\\\', '//'];
+        foreach($replacePaths as $replacePath) {
+            $location = str_replace($replacePath, $this->getPathSeperator(), $location);
+        }
+        $location = str_replace($this->getPathSeperator() == '/' ? '\\' : '/', $this->getPathSeperator(), $location);
+
+        $parts = explode($this->getPathSeperator(), $location);
+        $out = array();
+        foreach ($parts as $part){
+            if ($part == '.') continue;
+            if ($part == '..') {
+                array_pop($out);
+                continue;
+            }
+            $out[] = $part;
+        }
+        return implode($this->getPathSeperator(), $out);
+    }
 }
