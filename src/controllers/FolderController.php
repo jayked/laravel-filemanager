@@ -18,9 +18,9 @@ class FolderController extends LfmController {
      */
     public function getFolders()
     {
-        $user_path     = parent::getPath('user');
-        $lfm_user_path = parent::getFileName($user_path);
-        $user_folders  = parent::getDirectories($user_path);
+        $user_path     = !$this->getUserSlug() ? null : parent::getPath('user');
+        $lfm_user_path = !$this->getUserSlug() ? null : parent::getFileName($user_path);
+        $user_folders  = !$this->getUserSlug() ? [] : parent::getDirectories($user_path);
 
         $share_path     = parent::getPath('share');
         $lfm_share_path = parent::getFileName($share_path);

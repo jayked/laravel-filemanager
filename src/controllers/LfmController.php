@@ -246,9 +246,19 @@ class LfmController extends Controller
     {
         if(is_string($location)) {
 
-            // Throw a 403 exception when directory is not in the public directory
-            if(strpos($this->realPathWithNonExistingFiles($location), realpath(base_path($this->file_location))) !== 0) {
-                throw new ForbiddenDirectoryException('You are not allowed to use the provided directory');
+            // Throw a 403 exception when directory is not in one of the valid directories
+            $validDirectories = [Config::get( 'lfm.shared_folder_name' )];
+            if(!empty($this->getUserSlug())) {
+                $validDirectories[] = $this->getUserSlug();
+            }
+
+            foreach($validDirectories as $directory) {
+                $directoryLocation = base_path($this->file_location . $directory);
+                if(strpos($this->realPathWithNonExistingFiles($location),
+                        $this->realPathWithNonExistingFiles($directoryLocation)) !== 0
+                ) {
+                    throw new ForbiddenDirectoryException('You are not allowed to use the provided directory');
+                }
             }
         }
 
