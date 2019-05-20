@@ -44,6 +44,7 @@ class FolderController extends LfmController {
         $folder_name = Input::get('name');
 
         $path = parent::getPath('directory') . $folder_name;
+        $this->validateLocation($path);
 
         if (!File::exists($path)) {
             File::makeDirectory($path, $mode = 0777, true, true);
