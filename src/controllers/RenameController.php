@@ -34,6 +34,9 @@ class RenameController extends LfmController {
 
         $new_file = $file_path . $new_name;
 
+        $this->validateLocation($old_file);
+        $this->validateLocation($new_file);
+
         if (File::exists($new_file)) {
             return Lang::get('laravel-filemanager::lfm.error-rename');
         }
