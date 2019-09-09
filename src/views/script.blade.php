@@ -2,8 +2,8 @@
 var ds = '/';
 var home_dir = ds + "{{ (Config::get('lfm.allow_multi_user')) ? Auth::user()->user_field : '' }}";
 var shared_folder = ds + "{{ Config::get('lfm.shared_folder_name') }}";
-var image_url = "{{ Config::get('lfm.images_url') }}";
-var file_url = "{{ Config::get('lfm.files_url') }}";
+var image_url = "{{ Config::get('lfm.images_url') }}/";
+var file_url = "{{ Config::get('lfm.files_url') }}/";
 var back_html = '<li id="backButton">' +
 				'<a href="#" id="to-previous">' +
 				'<i class="fa fa-arrow-left"></i> {{ Lang::get('laravel-filemanager::lfm.nav-back') }}' +
@@ -194,7 +194,6 @@ function loadFolders()
 function loadItems()
 {
 	var working_dir = $('#working_dir').val();
-	console.log('Current working_dir : ' + working_dir);
 
 	$.ajax({
 		type: 'GET',
@@ -397,13 +396,18 @@ function useFile( file )
 
 	function useTinymce4AndColorbox( url, field_name )
 	{
-		parent.document.getElementById(field_name).value = url;
+		var element = parent.document.getElementById(field_name);
+		element.value = url;
+		element.onchange();
 
 		if ( typeof parent.tinyMCE !== "undefined" )
 		{
 			parent.tinyMCE.activeEditor.windowManager.close();
 		}
-		if ( typeof parent.$.fn.colorbox !== "undefined" )
+		if( typeof parent.tinymce !== 'undefined' ) {
+			parent.tinymce.activeEditor.windowManager.close();
+		}
+		if ( typeof parent.$ !== 'undefined' && typeof parent.$.fn.colorbox !== "undefined" )
 		{
 			parent.$.fn.colorbox.close();
 		}
@@ -457,7 +461,7 @@ function useFile( file )
 	}
 
 	var url = getFileUrl(file);
-	var field_name = getUrlParam('field_name');
+	var field_name = getUrlParam('field-name');
 
 	if ( window.opener || window.tinyMCEPopup || field_name || getUrlParam('CKEditorCleanUpFuncNum') || getUrlParam('CKEditor') )
 	{
