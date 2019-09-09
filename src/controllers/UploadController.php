@@ -1,12 +1,9 @@
 <?php namespace Jayked\Laravelfilemanager\controllers;
 
-use Jayked\Laravelfilemanager\controllers\Controller;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Str;
-use Lang;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Config;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -63,13 +60,12 @@ class UploadController extends LfmController
 
 		$dest_path = parent::getPath( 'directory' );
 
-		if( File::exists( $dest_path . $new_filename ) )
+		if( $this->storage->exists( $dest_path . $new_filename ) )
 		{
 			return Lang::get( 'laravel-filemanager::lfm.error-file-exist' );
 		}
 
-        $this->validateLocation($dest_path . $new_filename);
-		$file->move( $dest_path, $new_filename );
+		$file->move( $this->storage->path($dest_path), $new_filename );
 
 		if( 'Images' === $this->file_type )
 		{
@@ -194,7 +190,7 @@ class UploadController extends LfmController
 		$name .= '.' . $file->getClientOriginalExtension();
 
 		// If a file with the name already exists
-		if( File::exists( $path . $name ) )
+		if( $this->storage->exists( $path . $name ) )
 		{
 			return self::existingFile( $path, $file, uniqid() );
 		}
@@ -212,14 +208,14 @@ class UploadController extends LfmController
 	{
 		$thumb_folder_name = Config::get( 'lfm.thumb_folder_name' );
 
-		if( !File::exists( $dest_path . $thumb_folder_name ) )
+		if( !$this->storage->exists( $dest_path . $thumb_folder_name ) )
 		{
-			File::makeDirectory( $dest_path . $thumb_folder_name );
+            $this->storage->makeDirectory( $dest_path . $thumb_folder_name );
 		}
 
-		$thumb_img = Image::make( $dest_path . $new_filename );
+		$thumb_img = Image::make( $this->storage->path($dest_path . $new_filename) );
 		$thumb_img->fit( 200, 200 )
-			->save( $dest_path . $thumb_folder_name . '/' . $new_filename );
+			->save( $this->storage->path($dest_path . $thumb_folder_name . '/' . $new_filename) );
 		unset( $thumb_img );
 	}
 

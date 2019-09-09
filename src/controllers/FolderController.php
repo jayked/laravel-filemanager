@@ -1,9 +1,7 @@
 <?php namespace Jayked\Laravelfilemanager\controllers;
 
-use Jayked\Laravelfilemanager\controllers\Controller;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Input;
-use Lang;
 
 /**
  * Class FolderController
@@ -41,13 +39,10 @@ class FolderController extends LfmController {
      */
     public function getAddfolder()
     {
-        $folder_name = Input::get('name');
+        $path = $this->getPath('directory') . '/' . Input::get('name');
 
-        $path = parent::getPath('directory') . $folder_name;
-        $this->validateLocation($path);
-
-        if (!File::exists($path)) {
-            File::makeDirectory($path, $mode = 0777, true, true);
+        if (!$this->storage->exists($path)) {
+            $this->storage->makeDirectory($path, $mode = 0777, true, true);
             return 'OK';
         } else if (empty($folder_name)) {
             return Lang::get('laravel-filemanager::lfm.error-folder-name');

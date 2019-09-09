@@ -1,9 +1,8 @@
 <?php namespace Jayked\Laravelfilemanager\controllers;
 
-use Jayked\Laravelfilemanager\controllers\Controller;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class ItemsController
@@ -24,7 +23,7 @@ class ItemsController extends LfmController {
         $path = parent::getPath();
         $options = Config::get('lfm.options');
 
-        $files       = File::files($path);
+        $files       = $this->storage->files($path);
         $file_info   = $this->getFileInfos($files, $type);
         $directories = parent::getDirectories($path);
         $thumb_url   = parent::getUrl('thumb');
@@ -40,8 +39,8 @@ class ItemsController extends LfmController {
 
         foreach ($files as $key => $file) {
             $file_name = parent::getFileName($file)['short'];
-            $file_created = filemtime($file);
-            $file_size = number_format((File::size($file) / 1024), 2, ".", "");
+            $file_created = $this->storage->lastModified($file);
+            $file_size = number_format(($this->storage->size($file) / 1024), 2, ".", "");
 
             if ($file_size > 1024) {
                 $file_size = number_format(($file_size / 1024), 2, ".", "") . " Mb";
@@ -50,10 +49,10 @@ class ItemsController extends LfmController {
             }
 
             if ($type === 'Images') {
-                $file_type = File::mimeType($file);
+                $file_type = $this->storage->mimeType($file);
                 $icon = '';
             } else {
-                $extension = strtolower(File::extension($file_name));
+                $extension = pathinfo($this->storage->path($file_name))['extension'];
 
                 $icon_array = Config::get('lfm.file_icon_array');
                 $type_array = Config::get('lfm.file_type_array');

@@ -1,11 +1,9 @@
 <?php namespace Jayked\Laravelfilemanager\controllers;
 
-use Jayked\Laravelfilemanager\controllers\Controller;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Storage;
 use Jayked\Laravelfilemanager\Exceptions\NotAllowedException;
-use Jayked\Laravelfilemanager\Exceptions\ForbiddenDirectoryException;
 
 /**
  * Class LfmController
@@ -23,12 +21,17 @@ class LfmController extends Controller
 	public $file_type = null;
 	public $option = null;
 
+	/** @var \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter */
+	protected $storage;
+
 
 	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
+        $this->storage = Storage::disk(Config::get('lfm.storage_driver'));
+
 		$this->file_type = Input::get( 'type', 'Images' ); // default set to Images.
 
 		if( 'Images' === $this->file_type )
@@ -46,6 +49,9 @@ class LfmController extends Controller
 			throw new \Exception( 'unexpected type parameter' );
 		}
 
+		$this->dir_location .= '/';
+		$this->file_location .= '/';
+
 		$this->checkDefaultFolderExists( 'user' );
 		$this->checkDefaultFolderExists( 'share' );
 
@@ -55,7 +61,6 @@ class LfmController extends Controller
 			$this->checkOption( $this->option );
 		}
 	}
-
 
 	/**
 	 * Show the filemanager
@@ -90,19 +95,18 @@ class LfmController extends Controller
 
 	private function checkDefaultFolderExists( $type = 'share' )
 	{
-		if( $type === 'user' && \Config::get( 'lfm.allow_multi_user' ) !== true )
+		if( $type === 'user' && Config::get( 'lfm.allow_multi_user' ) !== true )
 		{
 			return;
 		}
 
 		$path = $this->getPath( $type );
 
-		if( !File::exists( $path ) )
+		if( !$this->storage->exists( $path ) )
 		{
-			File::makeDirectory( $path, $mode = 0777, true, true );
+			$this->storage->makeDirectory( $path, $mode = 0777, true, true );
 		}
 	}
-
 
 	private function formatLocation( $location, $type = null, $get_thumb = false )
 	{
@@ -156,12 +160,9 @@ class LfmController extends Controller
 
 	public function getPath( $type = null, $get_thumb = false )
 	{
-		$path = base_path() . '/' . $this->file_location;
+		$path = $this->file_location;
 
 		$path = $this->formatLocation( $path, $type );
-
-        // Validate access when approach is direct
-        $this->validateLocation($path);
 
 		return $path;
 	}
@@ -182,7 +183,7 @@ class LfmController extends Controller
 	public function getDirectories( $path )
 	{
 		$thumb_folder_name = Config::get( 'lfm.thumb_folder_name' );
-		$all_directories   = File::directories( $path );
+		$all_directories   = $this->storage->directories( $path );
 
 		$arr_dir = [ ];
 
@@ -218,11 +219,10 @@ class LfmController extends Controller
 	public function getTruePath( $file )
 	{
         $path = str_replace( config( 'lfm.images_url' ), config( 'lfm.images_dir' ), $file );
-        $this->validateLocation($path);
         return $path;
 	}
 
-	private function getPathSeperator()
+	protected function getPathSeperator()
 	{
 		return strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? '\\' : '/';
 	}
@@ -234,55 +234,4 @@ class LfmController extends Controller
 			throw new NotAllowedException( 'You are not allowed to use the [' . $option . '] option' );
 		}
 	}
-
-    /**
-     * Validate whether the location should be accessible or not
-     *
-     * @param  string  $location
-     *
-     * @return bool
-     */
-    protected function validateLocation($location)
-    {
-        if(is_string($location)) {
-
-            // Throw a 403 exception when directory is not in one of the valid directories
-            $validDirectories = [Config::get( 'lfm.shared_folder_name' )];
-            if(!empty($this->getUserSlug())) {
-                $validDirectories[] = $this->getUserSlug();
-            }
-
-            foreach($validDirectories as $directory) {
-                $directoryLocation = base_path($this->file_location . $directory);
-                if(strpos($this->realPathWithNonExistingFiles($location),
-                        $this->realPathWithNonExistingFiles($directoryLocation)) !== 0
-                ) {
-                    throw new ForbiddenDirectoryException('You are not allowed to use the provided directory');
-                }
-            }
-        }
-
-        return true;
-    }
-
-    private function realPathWithNonExistingFiles($location)
-    {
-        $replacePaths = ['\\\\', '//'];
-        foreach($replacePaths as $replacePath) {
-            $location = str_replace($replacePath, $this->getPathSeperator(), $location);
-        }
-        $location = str_replace($this->getPathSeperator() == '/' ? '\\' : '/', $this->getPathSeperator(), $location);
-
-        $parts = explode($this->getPathSeperator(), $location);
-        $out = array();
-        foreach ($parts as $part){
-            if ($part == '.') continue;
-            if ($part == '..') {
-                array_pop($out);
-                continue;
-            }
-            $out[] = $part;
-        }
-        return implode($this->getPathSeperator(), $out);
-    }
 }

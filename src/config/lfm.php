@@ -1,6 +1,8 @@
 <?php
 
 	return [
+        'storage_driver' => 'public',
+
 		// If rename_file set to false and this set to true, then filter filename characters which are not alphanumeric.
 		'alphanumeric_filename' => true,
 
@@ -37,11 +39,11 @@
 		'shared_folder_name' => 'shares',
 		'thumb_folder_name'  => 'thumbs',
 
-		'images_dir' => 'public/photos/',
-		'images_url' => '/photos/',
+		'images_dir' => 'photos',
+		'images_url' => '/storage/photos',
 
-		'files_dir'             => 'public/files/',
-		'files_url'             => '/files/',
+		'files_dir'             => 'files',
+		'files_url'             => '/storage/files',
 
 		// available since v1.0.0
 		'valid_image_mimetypes' => [

@@ -1,11 +1,7 @@
 <?php namespace Jayked\Laravelfilemanager\controllers;
 
-use Illuminate\Support\Facades\Event;
-use Jayked\Laravelfilemanager\controllers\Controller;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Input;
-use Lang;
 use Jayked\Laravelfilemanager\Events\ImageWasDeleted;
 
 /**
@@ -29,25 +25,25 @@ class DeleteController extends LfmController {
         $file_to_delete = $file_path . $name_to_delete;
         $thumb_to_delete = parent::getPath('thumb') . $name_to_delete;
 
-        if (!File::exists($file_to_delete)) {
+        if (!$this->storage->exists($file_to_delete)) {
             return $file_to_delete . ' not found!';
         }
 
-        if (File::isDirectory($file_to_delete)) {
-            if (sizeof(File::files($file_to_delete)) != 0) {
+        if (is_dir($this->storage->path($file_to_delete))) {
+            if (sizeof($this->storage->files($file_to_delete)) != 0) {
                 return Lang::get('laravel-filemanager::lfm.error-delete');
             }
 
-            File::deleteDirectory($file_to_delete);
+            $this->storage->deleteDirectory($file_to_delete);
 
             return 'OK';
         }
 
-        File::delete($file_to_delete);
+        $this->storage->delete($file_to_delete);
         event(new ImageWasDeleted($file_to_delete));
         
         if ('Images' === $this->file_type) {
-            File::delete($thumb_to_delete);
+            $this->storage->delete($thumb_to_delete);
         }
 
         return 'OK';
