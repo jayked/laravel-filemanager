@@ -1,6 +1,6 @@
 <?php
 $middlewares = \Config::get('lfm.middlewares');
-array_push($middlewares, '\Jayked\Laravelfilemanager\middleware\MultiUser');
+array_push($middlewares, \Jayked\Laravelfilemanager\middleware\MultiUser::class);
 
 // make sure authenticated
 Route::group(array('middleware' => $middlewares, 'prefix' => 'laravel-filemanager'), function ()
