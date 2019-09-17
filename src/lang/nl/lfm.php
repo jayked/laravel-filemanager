@@ -16,8 +16,8 @@ return [
 
     'title-page'        => 'File Manager',
     'title-panel'       => 'Laravel FileManager',
-    'title-upload'      => 'Upload Bestand',
-    'title-view'        => 'Bekijke Bestand',
+    'title-upload'      => 'Bestand uploaden',
+    'title-view'        => 'Bestand bekijken',
     'title-root'        => 'Bestanden',
     'title-shares'      => 'Home',
     'title-item'        => 'Item',
