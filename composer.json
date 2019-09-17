@@ -41,5 +41,12 @@
     "psr-4": {
       "Jayked\\Laravelfilemanager\\": "src/"
     }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Jayked\\Laravelfilemanager\\LaravelFilemanagerServiceProvider"
+      ]
+    }
   }
 }
