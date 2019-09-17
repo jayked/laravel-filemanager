@@ -1,13 +1,15 @@
 <?php namespace Jayked\Laravelfilemanager\controllers;
 
-use Illuminate\Support\Facades\Input;
+use Request;
 
 /**
  * Class DownloadController
+ *
  * @package Jayked\Laravelfilemanager\controllers
  */
-class DownloadController extends LfmController {
-	public $option = 'download';
+class DownloadController extends LfmController
+{
+    public $option = 'download';
 
     /**
      * Download a file
@@ -16,8 +18,8 @@ class DownloadController extends LfmController {
      */
     public function getDownload()
     {
-        $location = $this->getPath('directory') . Input::get('file');
+        $location = $this->getPath('directory') . Request::get('file');
+
         return $this->storage->download($location);
     }
-
 }

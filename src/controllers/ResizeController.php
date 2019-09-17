@@ -1,17 +1,18 @@
 <?php namespace Jayked\Laravelfilemanager\controllers;
 
-use Jayked\Laravelfilemanager\controllers\Controller;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\View;
+use Request;
+use View;
+use Exception;
 use Intervention\Image\Facades\Image;
 
 /**
  * Class ResizeController
+ *
  * @package Jayked\Laravelfilemanager\controllers
  */
-class ResizeController extends LfmController {
-	public $option = 'resize';
+class ResizeController extends LfmController
+{
+    public $option = 'resize';
 
     /**
      * Dipsplay image for resizing
@@ -21,27 +22,27 @@ class ResizeController extends LfmController {
     public function getResize()
     {
         $ratio = 1.0;
-        $image = Input::get('img');
+        $image = Request::get('img');
 
-        $path_to_image   = parent::getPath('directory') . $image;
-        $original_width  = Image::make($path_to_image)->width();
+        $path_to_image = parent::getPath('directory') . $image;
+        $original_width = Image::make($path_to_image)->width();
         $original_height = Image::make($path_to_image)->height();
 
         $scaled = false;
 
-        if ($original_width > 600) {
-            $ratio  = 600 / $original_width;
-            $width  = $original_width  * $ratio;
+        if($original_width > 600) {
+            $ratio = 600 / $original_width;
+            $width = $original_width * $ratio;
             $height = $original_height * $ratio;
             $scaled = true;
         } else {
-            $width  = $original_width;
+            $width = $original_width;
             $height = $original_height;
         }
 
-        if ($height > 400) {
-            $ratio  = 400 / $original_height;
-            $width  = $original_width  * $ratio;
+        if($height > 400) {
+            $ratio = 400 / $original_height;
+            $width = $original_width * $ratio;
             $height = $original_height * $ratio;
             $scaled = true;
         }
@@ -56,25 +57,22 @@ class ResizeController extends LfmController {
             ->with('ratio', $ratio);
     }
 
-
     public function performResize()
     {
-        $img    = Input::get('img');
-        $dataX  = Input::get('dataX');
-        $dataY  = Input::get('dataY');
-        $height = Input::get('dataHeight');
-        $width  = Input::get('dataWidth');
+        $img = Request::get('img');
+        $dataX = Request::get('dataX');
+        $dataY = Request::get('dataY');
+        $height = Request::get('dataHeight');
+        $width = Request::get('dataWidth');
 
-        $img = parent::getTruePath( $img );
+        $img = parent::getTruePath($img);
 
         try {
             Image::make(base_path($img))->resize($width, $height)->save();
+
             return "OK";
-        } catch (Exception $e) {
+        } catch(Exception $e) {
             return "width : " . $width . " height: " . $height;
-            return $e;
         }
-
     }
-
 }
