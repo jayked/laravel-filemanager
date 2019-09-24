@@ -101,6 +101,7 @@ function SetUrl(url){
 	let targetInput = window.parent.document.querySelector('#' + localStorage.getItem('target_input'));
 	if(targetInput) {
 		targetInput.value = url;
+		targetInput.dispatchEvent(new Event('change'));
 	}
 
 	// Set or change the preview image src
