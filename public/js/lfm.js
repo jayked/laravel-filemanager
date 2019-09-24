@@ -86,14 +86,26 @@ class LFM {
 			this.components.splice(index);
 		}
 	}
+	
+	/**
+	 * Reload old and new components
+	 */
+	reload() {
+		this.destroy();
+		this.init();
+	}
 }
 
 function SetUrl(url){
 	// Set the value of the desired input to image url
-	let targetInput = window.document.querySelector('#' + localStorage.getItem('target_input'));
-	targetInput.value = url;
+	let targetInput = window.parent.document.querySelector('#' + localStorage.getItem('target_input'));
+	if(targetInput) {
+		targetInput.value = url;
+	}
 
 	// Set or change the preview image src
-	let targetPreview = window.document.querySelector('#' + localStorage.getItem('target_preview'));
-	targetPreview.setAttribute('src',url);
+	let targetPreview = window.parent.document.querySelector('#' + localStorage.getItem('target_preview'));
+	if(targetPreview) {
+		targetPreview.setAttribute('src',url);
+	}
 }
