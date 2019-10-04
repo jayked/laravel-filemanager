@@ -147,6 +147,7 @@ class UploadController extends LfmController
 			throw new \Exception( 'Config : ' . $config_name . ' is not set correctly' );
 		}
 
+		$is_valid = false;
 		if( in_array( $mimetype, $valid_mimetypes ) )
 		{
 			$is_valid = true;
